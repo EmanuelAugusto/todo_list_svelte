@@ -15,7 +15,16 @@ class TodoRepository {
 
     getList() {
         const result = this.#getItensFromLocalStorage();
-        return result ? result : []
+        const ArrayWithKeys = {};
+
+        if (result) {
+            for (const status of this.STATESFROMTODOLIST) {
+                const TodoWithStatus = result.filter((td) => td.status === status)
+                ArrayWithKeys[status] = [...TodoWithStatus]
+            }
+        }
+
+        return result ? ArrayWithKeys : []
     }
 
     clearAllList() {
@@ -23,7 +32,8 @@ class TodoRepository {
     }
 
     setItensInLocalStorage(value) {
-        const TodoAlreadySaved = this.getList();
+        const FromLocalStorage = this.#getItensFromLocalStorage();
+        const TodoAlreadySaved = FromLocalStorage ? FromLocalStorage : [];
 
         const NewsTodos = [...TodoAlreadySaved, value]
 

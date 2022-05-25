@@ -1,12 +1,9 @@
 <script>
   import "../css/app.css";
   export let label = "";
+  export let color = ""
 </script>
 
-<div
-  class="badge ma-01 diplay-flex flex-end padding-1 badge-status border-radius text-center"
-  style="width: 100px;"
-  align="center"
->
+<div class={`padding-05 badge-status border-radius text-center ${color}`} align="center">
   {label}
 </div>
