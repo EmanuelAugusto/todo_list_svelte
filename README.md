@@ -23,11 +23,11 @@ yarn run dev
 
 Estrutua do projeto:
 
-src/
-    - components
-    - css
-    - libs
-    - repositorys
-    - services
-    - App.svelte
-    - main.js
+src/\
+    - components\
+    - css\
+    - libs\
+    - repositorys\
+    - services\
+    - App.svelte\
+    - main.js\
