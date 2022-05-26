@@ -8,6 +8,7 @@ body {
 body {
   margin: 0;
   padding: 8px;
+  background-color: #2c2f33;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -23,7 +24,7 @@ textarea {
   padding: 0.4em;
   margin: 0 0 0.5em 0;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 0px;
   border-radius: 2px;
 }
 
@@ -77,7 +78,7 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-  border: 1px solid #27104e;
+  border: 0px;
 }
 
 .row {
@@ -127,7 +128,11 @@ input[type="text"]:focus {
 }
 
 .bg-dark {
-  background-color: #27104e;
+  background-color: #6665d2;
+}
+
+.bg-less-black{
+  background-color: #2c2f33;
 }
 
 .text-white {
@@ -138,6 +143,10 @@ input[type="text"]:focus {
   font-weight: 500;
   color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
+}
+
+.gray-alt-color{
+  background-color: #d1d1d1;
 }
 
 .font-bold {
@@ -158,7 +167,7 @@ input[type="text"]:focus {
 
 .dark-hover:hover {
   transition: 0.5s;
-  background-color: #3f2370;
+  background-color: #6f6dd3;
   color: white;
   -webkit-transition: 0.5s;
   -moz-transition: 0.5s;
@@ -167,7 +176,7 @@ input[type="text"]:focus {
 }
 
 .dark-red {
-  background-color: red;
+  background-color: rgba(255, 0, 0, 0.61);
 }
 
 .dark-red:hover {
@@ -197,8 +206,38 @@ input[type="text"]:focus {
 }
 
 .text-ellips {
-  white-space: nowrap; 
-  width: 375px; 
+  white-space: nowrap;
+  width: 250px;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
+}
+
+.height-column-items {
+  min-height: 500px;
+}
+
+.max-height-item {
+  max-height: 38px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #6f6dd3; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #6f6dd3; 
 }

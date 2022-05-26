@@ -7,7 +7,7 @@
   <div class="diplay-flex espace-content align-items-center">
     <div><h1>{taskDetails.label}</h1></div>
     <div class="flex-end">
-      <Badge label={taskDetails.status} color="color-grey" />
+      <Badge label={taskDetails.status} color="gray-alt-color" />
     </div>
   </div>
   <div>

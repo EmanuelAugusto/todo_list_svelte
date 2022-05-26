@@ -3,9 +3,9 @@
   export let value;
 </script>
 
-<dialog open={value} width="100%" height="100%">
+<dialog open={value} class="bg-less-black">
   <div class="diplay-flex espace-content">
-    <div><slot name="title"></slot></div>
+    <div><slot name="title" /></div>
     <div class="flex-end">
       <Button
         label="X"
@@ -15,7 +15,7 @@
       />
     </div>
   </div>
-  <div><slot name="content"></slot></div>
+  <div><slot name="content" /></div>
 </dialog>
 
 <style>

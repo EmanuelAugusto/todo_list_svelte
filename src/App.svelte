@@ -13,30 +13,37 @@
   let TodoList = {};
   let optionsSelect = TodoRepository.STATESFROMTODOLIST;
 
-  onMount(() => {
-    TodoList = TodoRepository.getList();
-  });
-
+  let _id = null;
   let valueToInput = "";
   let valueToSelect = "A fazer";
   let valueTextArea = "";
 
-  let valueNewStatus = "";
+  let taskDetails = null;
+
+  let modalStateDetailTask = false;
+  let modalState = false;
+
+  onMount(() => {
+    TodoList = TodoRepository.getList();
+  });
 
   const save = () => {
-    TodoRepository.setItensInLocalStorage({
+    TodoRepository.save({
       label: valueToInput,
       description: valueTextArea,
       status: valueToSelect,
+      _id,
+    });
+
+    SetValues({
+      label: "",
+      description: "",
+      status: "A fazer",
+      _id: null,
     });
 
     TodoList = TodoRepository.getList();
     OpenOrCloseModal();
-  };
-
-  const AddStatus = () => {
-    TodoRepository.STATESFROMTODOLIST.push(valueNewStatus);
-    TodoList = TodoRepository.getList();
   };
 
   const ClearAllTasks = () => {
@@ -44,33 +51,44 @@
     TodoList = TodoRepository.getList();
   };
 
-  let modalState = false;
-
-  const OpenOrCloseModal = () => {
-    modalState = !modalState;
+  const SetValues = (task) => {
+    valueToInput = task.label;
+    valueToSelect = task.status;
+    valueTextArea = task.description;
+    _id = task._id;
   };
 
-  let taskDetails = null;
+  const OpenOrCloseModal = (task = null) => {
+    modalState = !modalState;
+    if (task) {
+      SetValues(task);
+    }
+  };
 
-  let modalStateDetailTask = false;
+  const DeleteTask = (_id) => {
+    TodoRepository.delete(_id);
+    OpenOrCloseModalDetailTask()
+    TodoList = TodoRepository.getList();
+  };
 
   const OpenOrCloseModalDetailTask = (task) => {
-    taskDetails = task;
+    if (task) {
+      taskDetails = task;
+    }
     modalStateDetailTask = !modalStateDetailTask;
   };
 
-  let modalStateAddStatus = false;
-
-  const OpenOrCloseModalAddStatus = () => {
-    modalStateAddStatus = !modalStateAddStatus;
+  const EditTask = (task) => {
+    OpenOrCloseModalDetailTask(null);
+    OpenOrCloseModal(task);
   };
 </script>
 
 <main id="app-body">
   <Dialog bind:value={modalState}>
-    <h2 slot="title">Nova task</h2>
+    <h2 slot="title" class="text-white">Nova task</h2>
     <div slot="content">
-      <div class="flex-container-wrap">
+      <div class="flex-container-wrap text-white">
         Titulo:
         <Input bind:value={valueToInput} />
         Status da Atividade:
@@ -89,45 +107,47 @@
     </div>
   </Dialog>
 
-  <Dialog bind:value={modalStateAddStatus}>
-    <h2 slot="title">Adicionar Status</h2>
-    <div slot="content">
-      <div class="flex-container-wrap">
-        Novo Status:
-        <Input bind:value={valueNewStatus} />
-        Depois ou antes de qual Status?
-        <Select bind:value={valueToSelect} bind:options={optionsSelect} />
-      </div>
-      <div class="diplay-flex flex-end">
-        <Button
-          label="Cancelar"
-          colorBtn="dark-red"
-          onClick={OpenOrCloseModalAddStatus}
-        />
-        <Button label="Salvar" onClick={AddStatus} />
-      </div>
-    </div>
-  </Dialog>
-
   {#if taskDetails}
     <Dialog bind:value={modalStateDetailTask}>
-      <h2 slot="title">Detalhes da task</h2>
-      <div slot="content">
+      <div slot="title" class="diplay-flex align-items-center">
+        <h2 class="text-white">Detalhes da task</h2>
+        <div>
+          <Button
+            label="Editar"
+            onClick={() => {
+              EditTask(taskDetails);
+            }}
+          />
+          <Button
+            label="Apagar"
+            colorBtn="dark-red"
+            onClick={() => {
+              DeleteTask(taskDetails._id);
+            }}
+          />
+        </div>
+      </div>
+      <div slot="content" class="text-white">
         <TaskDetails bind:taskDetails />
       </div>
     </Dialog>
   {/if}
 
-  <h2>Todo List com Svelte</h2>
+  <h2 class="text-white">Todo List com Svelte</h2>
   <div class="diplay-flex width-100 justify-center espace-content">
-    <Button label="Criar Task" onClick={OpenOrCloseModal} />
-    <Button label="Configurações" onClick={OpenOrCloseModalAddStatus} />
+    <Button
+      label="Criar Task"
+      onClick={() => {
+        OpenOrCloseModal();
+      }}
+    />
+
     <Button label="Limpar todas tasks" onClick={ClearAllTasks} />
   </div>
   <div class="flex-container overflow-x">
     {#each Object.entries(TodoList) as item}
-      <div class="flex-container-width">
-        <div class="text-center"><h4>{item[0]}</h4></div>
+      <div class="flex-container-width height-column-items">
+        <div class="text-center"><h4 class="text-white">{item[0]}</h4></div>
         <div class="padding-05">
           {#each item[1] as todo}
             <Item
