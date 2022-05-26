@@ -241,3 +241,12 @@ input[type="text"]:focus {
 ::-webkit-scrollbar-thumb:hover {
   background: #6f6dd3; 
 }
+
+@media only screen and (max-width: 600px) {
+  .flex-container-wrap{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+}

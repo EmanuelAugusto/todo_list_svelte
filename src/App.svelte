@@ -88,7 +88,7 @@
   <Dialog bind:value={modalState}>
     <h2 slot="title" class="text-white">Nova task</h2>
     <div slot="content">
-      <div class="flex-container-wrap text-white">
+      <div class="flex-container-wrap text-white max-width-mobile">
         Titulo:
         <Input bind:value={valueToInput} />
         Status da Atividade:
