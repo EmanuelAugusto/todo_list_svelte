@@ -23,7 +23,7 @@
   let modalStateDetailTask = false;
   let modalState = false;
 
-  onMount(() => {
+  onMount(async () => {
     TodoList = TodoRepository.getList();
   });
 
@@ -35,12 +35,7 @@
       _id,
     });
 
-    SetValues({
-      label: "",
-      description: "",
-      status: "A fazer",
-      _id: null,
-    });
+    clearForm();
 
     TodoList = TodoRepository.getList();
     OpenOrCloseModal();
@@ -58,6 +53,15 @@
     _id = task._id;
   };
 
+  const clearForm = () => {
+    SetValues({
+      label: "",
+      description: "",
+      status: "A fazer",
+      _id: null,
+    });
+  };
+
   const OpenOrCloseModal = (task = null) => {
     modalState = !modalState;
     if (task) {
@@ -67,7 +71,7 @@
 
   const DeleteTask = (_id) => {
     TodoRepository.delete(_id);
-    OpenOrCloseModalDetailTask()
+    OpenOrCloseModalDetailTask();
     TodoList = TodoRepository.getList();
   };
 
@@ -85,8 +89,13 @@
 </script>
 
 <main id="app-body">
-  <Dialog bind:value={modalState}>
-    <h2 slot="title" class="text-white">Nova task</h2>
+  <Dialog
+    bind:value={modalState}
+    onCloseModal={() => {
+      clearForm();
+    }}
+  >
+    <h2 slot="title" class="text-white">{_id ? "Editar Task" : "Nova task"}</h2>
     <div slot="content">
       <div class="flex-container-wrap text-white max-width-mobile">
         Titulo:

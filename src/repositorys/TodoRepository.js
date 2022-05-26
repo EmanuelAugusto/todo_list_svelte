@@ -17,16 +17,16 @@ class TodoRepository {
 
     getList() {
         const result = this.#getItensFromLocalStorage();
+        const resultCloned = result ? result : [];
         const ArrayWithKeys = {};
 
-        if (result) {
-            for (const status of this.STATESFROMTODOLIST) {
-                const TodoWithStatus = result.filter((td) => td.status === status)
-                ArrayWithKeys[status] = [...TodoWithStatus]
-            }
+
+        for (const status of this.STATESFROMTODOLIST) {
+            const TodoWithStatus = resultCloned.filter((td) => td.status === status)
+            ArrayWithKeys[status] = [...TodoWithStatus]
         }
 
-        return result ? ArrayWithKeys : []
+        return ArrayWithKeys
     }
 
     #getIndex(_id) {
