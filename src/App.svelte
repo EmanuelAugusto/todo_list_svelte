@@ -19,6 +19,7 @@
   let valueToSelect = "A fazer";
   let valueTextArea = "";
   let valueToSelectPriority = "Baixa";
+  let valueToInputSearch = "";
 
   let taskDetails = null;
 
@@ -88,6 +89,25 @@
     OpenOrCloseModalDetailTask(null);
     OpenOrCloseModal(task);
   };
+
+  let itemInDrag = null;
+
+  const onDragStartItem = (evt) => {
+    itemInDrag = evt.target.id;
+  };
+
+  const allowDrop = (evt) => {
+    evt.preventDefault();
+  };
+
+  const drop = (evt) => {
+    if (optionsSelect.includes(evt.target.id))
+      TodoRepository.updateStatus(itemInDrag, evt.target.id);
+  };
+
+  const searchTask = () => {
+    TodoRepository.getPerTitle(valueToInputSearch);
+  };
 </script>
 
 <main id="app-body">
@@ -99,27 +119,31 @@
   >
     <h2 slot="title" class="text-white">{_id ? "Editar Task" : "Nova task"}</h2>
     <div slot="content">
-      <div class="flex-container-wrap text-white max-width-mobile">
-        Titulo:
-        <Input bind:value={valueToInput} />
-        Status da Atividade:
-        <Select bind:value={valueToSelect} bind:options={optionsSelect} />
-        Prioridade da Atividade:
-        <Select
-          bind:value={valueToSelectPriority}
-          bind:options={optionsSelectPriority}
-        />
-        Descrição da atividade:
-        <Textarea bind:value={valueTextArea} />
-      </div>
-      <div class="diplay-flex flex-end">
-        <Button
-          label="Cancelar"
-          colorBtn="dark-red"
-          onClick={OpenOrCloseModal}
-        />
-        <Button label="Salvar" onClick={save} />
-      </div>
+      <form on:submit|preventDefault={save}>
+        <div class="flex-container-wrap text-white max-width-mobile">
+          Titulo:
+          <Input bind:value={valueToInput} required={true} />
+          Status da Atividade:
+          <Select bind:value={valueToSelect} bind:options={optionsSelect} />
+          Prioridade da Atividade:
+          <Select
+            bind:value={valueToSelectPriority}
+            bind:options={optionsSelectPriority}
+          />
+          Descrição da atividade:
+          <Textarea bind:value={valueTextArea} />
+        </div>
+
+        <div class="diplay-flex flex-end">
+          <Button
+            label="Cancelar"
+            colorBtn="dark-red"
+            type="button"
+            onClick={OpenOrCloseModal}
+          />
+          <Button label="Salvar" type="submit" />
+        </div>
+      </form>
     </div>
   </Dialog>
 
@@ -158,11 +182,28 @@
       }}
     />
 
+    <Input
+      bind:value={valueToInputSearch}
+      placeholder="Buscar task"
+      onInput={() => {
+        searchTask();
+      }}
+    />
+
     <Button label="Limpar todas tasks" onClick={ClearAllTasks} />
   </div>
   <div class="flex-container overflow-x">
     {#each Object.entries($TaskStore) as item}
-      <div class="flex-container-width height-column-items">
+      <div
+        class="flex-container-width height-column-items"
+        id={item[0]}
+        on:drop={(evt) => {
+          drop(evt);
+        }}
+        on:dragover={(evt) => {
+          allowDrop(evt);
+        }}
+      >
         <div class="text-center color-dark-grey ma-1  padding-03 border-radius">
           <h4 class="text-white">{item[0]}</h4>
         </div>
@@ -172,6 +213,9 @@
               label={todo}
               onClick={() => {
                 OpenOrCloseModalDetailTask(todo);
+              }}
+              onDragStart={(evt) => {
+                onDragStartItem(evt);
               }}
             />
           {/each}

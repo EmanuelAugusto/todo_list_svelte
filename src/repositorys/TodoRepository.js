@@ -61,9 +61,12 @@ class TodoRepository {
         }
     }
 
-    getList() {
-        const result = this.#getItensFromLocalStorage();
+    getList(filteredResult = null) {
+
+        const result = filteredResult ? filteredResult : this.#getItensFromLocalStorage();
         const resultCloned = result ? result : [];
+
+
         const ArrayWithKeys = {};
 
         const STATESFROMTODOLIST = this.getStatusList()
@@ -105,8 +108,44 @@ class TodoRepository {
         TaskStore.set(this.getList())
     }
 
+    updateStatus(_id, status) {
+        const FromLocalStorage = this.#getItensFromLocalStorage();
+
+        if (FromLocalStorage) {
+            const index = this.#getIndex(_id)
+
+            const task = FromLocalStorage[index];
+
+            task.created_at = task?.created_at || DateTime()
+            task.updated_at = DateTime();
+            task.status = status;
+
+            FromLocalStorage[index] = task;
+
+            this.#persist(FromLocalStorage)
+        }
+
+        TaskStore.set(this.getList())
+
+    }
+
     getStatusList() {
         return this.STATESFROMTODOLIST.map(s => s.status)
+    }
+
+    getPerTitle(value) {
+        const FromLocalStorage = this.#getItensFromLocalStorage();
+
+        if (FromLocalStorage && value) {
+            const filtered = FromLocalStorage.filter(t => t.label.toLowerCase().includes(value))
+
+            TaskStore.set(this.getList(filtered))
+        } else {
+
+            TaskStore.set(this.getList())
+
+        }
+
     }
 
 }

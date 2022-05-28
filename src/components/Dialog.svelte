@@ -13,7 +13,7 @@
   $: detect(value);
 </script>
 
-<dialog open={value} class={`bg-less-black`}>
+<dialog open={value} class={`bg-less-black border-radius `}>
   <div class={`diplay-flex espace-content`}>
     <div><slot name="title" /></div>
     <div class="flex-end">
@@ -31,7 +31,6 @@
 <style>
   dialog {
     width: 75%;
-    height: 80%;
     border: 0px;
     -webkit-box-shadow: 0px 0px 23px 6px #000000;
     box-shadow: 0px 0px 23px 6px #000000;
