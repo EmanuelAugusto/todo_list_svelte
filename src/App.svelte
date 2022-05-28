@@ -8,15 +8,17 @@
   import Textarea from "./components/Textarea.svelte";
   import TaskDetails from "./components/tasks/Task.svelte";
   import TodoRepository from "./repositorys/TodoRepository";
+  import { TaskStore } from "./store/TasksStore";
   import "./css/app.css";
 
-  let TodoList = {};
-  let optionsSelect = TodoRepository.STATESFROMTODOLIST;
+  let optionsSelect = [];
+  let optionsSelectPriority = TodoRepository.PRIORITYLIST;
 
   let _id = null;
   let valueToInput = "";
   let valueToSelect = "A fazer";
   let valueTextArea = "";
+  let valueToSelectPriority = "Baixa";
 
   let taskDetails = null;
 
@@ -24,7 +26,7 @@
   let modalState = false;
 
   onMount(async () => {
-    TodoList = TodoRepository.getList();
+    optionsSelect = TodoRepository.getStatusList();
   });
 
   const save = () => {
@@ -32,18 +34,17 @@
       label: valueToInput,
       description: valueTextArea,
       status: valueToSelect,
+      priority: valueToSelectPriority,
       _id,
     });
 
     clearForm();
 
-    TodoList = TodoRepository.getList();
     OpenOrCloseModal();
   };
 
   const ClearAllTasks = () => {
     TodoRepository.clearAllList();
-    TodoList = TodoRepository.getList();
   };
 
   const SetValues = (task) => {
@@ -51,6 +52,7 @@
     valueToSelect = task.status;
     valueTextArea = task.description;
     _id = task._id;
+    valueToSelectPriority = task?.priority || "Baixa";
   };
 
   const clearForm = () => {
@@ -59,6 +61,7 @@
       description: "",
       status: "A fazer",
       _id: null,
+      priority: "Baixa",
     });
   };
 
@@ -72,7 +75,6 @@
   const DeleteTask = (_id) => {
     TodoRepository.delete(_id);
     OpenOrCloseModalDetailTask();
-    TodoList = TodoRepository.getList();
   };
 
   const OpenOrCloseModalDetailTask = (task) => {
@@ -102,6 +104,11 @@
         <Input bind:value={valueToInput} />
         Status da Atividade:
         <Select bind:value={valueToSelect} bind:options={optionsSelect} />
+        Prioridade da Atividade:
+        <Select
+          bind:value={valueToSelectPriority}
+          bind:options={optionsSelectPriority}
+        />
         Descrição da atividade:
         <Textarea bind:value={valueTextArea} />
       </div>
@@ -154,9 +161,11 @@
     <Button label="Limpar todas tasks" onClick={ClearAllTasks} />
   </div>
   <div class="flex-container overflow-x">
-    {#each Object.entries(TodoList) as item}
+    {#each Object.entries($TaskStore) as item}
       <div class="flex-container-width height-column-items">
-        <div class="text-center"><h4 class="text-white">{item[0]}</h4></div>
+        <div class="text-center color-dark-grey ma-1  padding-03 border-radius">
+          <h4 class="text-white">{item[0]}</h4>
+        </div>
         <div class="padding-05">
           {#each item[1] as todo}
             <Item

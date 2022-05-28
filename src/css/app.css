@@ -57,6 +57,10 @@ textarea {
   padding: 5px;
 }
 
+.padding-03 {
+  padding: 2px;
+}
+
 .column {
   flex-direction: column;
 }
@@ -196,6 +200,11 @@ input[type="text"]:focus {
 .color-grey {
   background-color: rgb(192, 192, 192);
 }
+
+.color-dark-grey {
+  background-color: rgb(117, 117, 117);
+}
+
 
 .align-items-center {
   align-items: baseline;

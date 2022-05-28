@@ -11,7 +11,7 @@
     </div>
   </div>
   <div>
-      <p class="font-bold"> Descrição da atividade:</p>
-      {taskDetails.description}
+    <p class="font-bold">Descrição da atividade:</p>
+    {taskDetails.description}
   </div>
 </div>

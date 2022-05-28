@@ -1,32 +1,26 @@
 import Uuid from "../libs/Uuid"
+import { DateTime } from "../libs/moment"
+import { TaskStore } from "../store/TasksStore"
 
 class TodoRepository {
 
     KEYLOCALSTORAGE = "TODO"
 
     STATESFROMTODOLIST = [
-        "A fazer",
-        "Fazendo",
-        "Impedidas",
-        "Concluidas"
+        { status: "A fazer", color: "" },
+        { status: "Fazendo", color: "" },
+        { status: "Impedidas", color: "" },
+        { status: "Concluidas", color: "" }
+    ]
+
+    PRIORITYLIST = [
+        "Baixa",
+        "Média",
+        "Alta"
     ]
 
     #getItensFromLocalStorage() {
         return JSON.parse(localStorage.getItem(this.KEYLOCALSTORAGE))
-    }
-
-    getList() {
-        const result = this.#getItensFromLocalStorage();
-        const resultCloned = result ? result : [];
-        const ArrayWithKeys = {};
-
-
-        for (const status of this.STATESFROMTODOLIST) {
-            const TodoWithStatus = resultCloned.filter((td) => td.status === status)
-            ArrayWithKeys[status] = [...TodoWithStatus]
-        }
-
-        return ArrayWithKeys
     }
 
     #getIndex(_id) {
@@ -35,8 +29,21 @@ class TodoRepository {
         return FromLocalStorage.findIndex(t => t._id === _id)
     }
 
-    clearAllList() {
-        localStorage.removeItem(this.KEYLOCALSTORAGE)
+    #persist(data) {
+        localStorage.setItem(this.KEYLOCALSTORAGE, JSON.stringify(data))
+    }
+
+    #create(value) {
+        const FromLocalStorage = this.#getItensFromLocalStorage();
+        const TodoAlreadySaved = FromLocalStorage ? FromLocalStorage : [];
+
+        value._id = Uuid();
+        value.updated_at = null;
+        value.created_at = DateTime();
+
+        const NewsTodos = [...TodoAlreadySaved, value]
+
+        this.#persist(NewsTodos)
     }
 
     #update(task) {
@@ -45,10 +52,34 @@ class TodoRepository {
         if (FromLocalStorage) {
             const index = this.#getIndex(task._id)
 
+            task.created_at = FromLocalStorage[index]?.created_at || DateTime()
+            task.updated_at = DateTime();
+
             FromLocalStorage[index] = task;
 
             this.#persist(FromLocalStorage)
         }
+    }
+
+    getList() {
+        const result = this.#getItensFromLocalStorage();
+        const resultCloned = result ? result : [];
+        const ArrayWithKeys = {};
+
+        const STATESFROMTODOLIST = this.getStatusList()
+
+        for (const status of STATESFROMTODOLIST) {
+            const TodoWithStatus = resultCloned.filter((td) => td.status === status)
+            ArrayWithKeys[status] = [...TodoWithStatus]
+        }
+
+        return ArrayWithKeys
+    }
+
+    clearAllList() {
+        localStorage.removeItem(this.KEYLOCALSTORAGE)
+
+        TaskStore.set(this.getList())
     }
 
     save(task) {
@@ -57,6 +88,8 @@ class TodoRepository {
         } else {
             this.#create(task)
         }
+
+        TaskStore.set(this.getList())
     }
 
     delete(_id) {
@@ -69,22 +102,13 @@ class TodoRepository {
 
         this.#persist(TodoAlreadySaved)
 
+        TaskStore.set(this.getList())
     }
 
-    #persist(data) {
-        localStorage.setItem(this.KEYLOCALSTORAGE, JSON.stringify(data))
+    getStatusList() {
+        return this.STATESFROMTODOLIST.map(s => s.status)
     }
 
-    #create(value) {
-        const FromLocalStorage = this.#getItensFromLocalStorage();
-        const TodoAlreadySaved = FromLocalStorage ? FromLocalStorage : [];
-
-        value._id = Uuid();
-
-        const NewsTodos = [...TodoAlreadySaved, value]
-
-        this.#persist(NewsTodos)
-    }
 }
 
 export default new TodoRepository

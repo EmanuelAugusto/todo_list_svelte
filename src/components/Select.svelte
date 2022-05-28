@@ -3,7 +3,6 @@
   export let value = "";
 
   export let options = [];
-  export let className = "";
 </script>
 
 <select class="border-radius ma-1 padding-1 dark-hover" bind:value>
