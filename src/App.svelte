@@ -11,25 +11,27 @@
   import { TaskStore } from "./store/TasksStore";
   import "./css/app.css";
 
+  // variables
   let optionsSelect = [];
   let optionsSelectPriority = TodoRepository.PRIORITYLIST;
-
   let _id = null;
   let valueToInput = "";
   let valueToSelect = "A fazer";
   let valueTextArea = "";
   let valueToSelectPriority = "Baixa";
   let valueToInputSearch = "";
-
   let taskDetails = null;
-
   let modalStateDetailTask = false;
   let modalState = false;
+  let itemInDrag = null;
 
+  // hook
   onMount(async () => {
     optionsSelect = TodoRepository.getStatusList();
   });
 
+
+  // methods
   const save = () => {
     TodoRepository.save({
       label: valueToInput,
@@ -89,8 +91,6 @@
     OpenOrCloseModalDetailTask(null);
     OpenOrCloseModal(task);
   };
-
-  let itemInDrag = null;
 
   const onDragStartItem = (evt) => {
     itemInDrag = evt.target.id;
@@ -173,7 +173,7 @@
     </Dialog>
   {/if}
 
-  <h2 class="text-white">Todo List com Svelte</h2>
+  <h2 class="text-white">Todo List</h2>
   <div class="diplay-flex width-100 justify-center espace-content">
     <Button
       label="Criar Task"

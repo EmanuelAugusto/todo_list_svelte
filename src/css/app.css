@@ -28,6 +28,18 @@ textarea {
   border-radius: 2px;
 }
 
+textarea, select {
+  border: none;
+  overflow: auto;
+  outline: none;
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+
+  resize: none; /*remove the resize handle on the bottom right*/
+}
+
 .diplay-flex {
   display: flex;
 }
@@ -79,6 +91,7 @@ input[type="text"] {
   -webkit-transition: 0.5s;
   transition: 0.5s;
   outline: none;
+  border: 0px;
 }
 
 input[type="text"]:focus {
